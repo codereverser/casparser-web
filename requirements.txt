@@ -1,0 +1,4 @@
+casparser[mupdf]==0.4.6
+packaging==20.9
+python-multipart==0.0.5
+fastapi==0.64.0

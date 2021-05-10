@@ -14,15 +14,60 @@ div(v-if="cas !== null")
         .p-col-6 Mobile
         .p-col-6.p-text-uppercase.p-font-mono.p-text-bold {{ cas.investor_info.mobile }}
     .p-col-1
-    Fieldset.p-md-5.p-col-12(legend="Valuation" :toggleable="true")
+    Fieldset.p-md-5.p-col-12(legend="CAS Data" :toggleable="true")
       .p-grid
-        .p-col-6 Total Valuation
-        .p-col-6.p-text-bold.p-font-mono.p-valuation {{ formatCurrency(valuation) }}
+        .p-col-6 Type
+        .p-col-6.p-text-bold.p-font-mono {{ cas.cas_type }}
+        .p-col-6 Source
+        .p-col-6.p-text-bold.p-font-mono {{ cas.file_type }}
         .p-col-6 Date
         .p-col-6.p-text-bold.p-font-mono {{ formatDate(valuationDate) }}
+        .p-col-6 Total Valuation
+        .p-col-6.p-text-bold.p-font-mono.p-valuation {{ formatCurrency(valuation) }}
   TabView
     TabPanel(header="Table")
-      div
+      .p-d-flex.p-flex-row.p-jc-end.p-ai-center.p-m-2
+        .p-text-bold.p-mr-2 Hide zero-balance funds?
+        InputSwitch(v-model="hideZeroSchemes")
+      Panel.p-pb-4(v-for="(folio, index) in folios" :key="folio.folio" :toggleable="true")
+        template(#header)
+          .p-d-flex.p-flex-row.p-jc-between(style="width: 100%;")
+            .p-d-flex.p-flex-row.p-jc-around.p-align-center
+              span Folio:&nbsp;
+              .p-text-bold {{ folio.folio }}
+            .p-d-flex.p-flex-row.p-jc-around.p-align-center
+              span PAN:&nbsp;
+              .p-text-bold {{ folio.PAN }}
+            .p-d-flex.p-flex-row.p-jc-around.p-align-center
+              span KYC:&nbsp;
+              .p-text-bold {{ folio.KYC }}
+            .p-d-flex.p-flex-row.p-jc-around.p-align-center
+              span PANKYC:&nbsp;
+              .p-text-bold {{ folio.PANKYC }}
+        DataTable.p-datatable-sm(v-for="scheme in getSchemes(folio)" :key="scheme.scheme" :autoLayout="true"
+                               :value="scheme.transactions" :paginator="scheme.transactions.length > 5" :rows="10")
+          template(#header)
+            .p-grid
+              .p-col-8 {{ scheme.scheme }} - {{ scheme.valuation.value }}
+              .p-col-2.p-d-flex.p-flex-row.p-jc-end
+                span Open:&nbsp;
+                .p-text-bold {{ scheme.open }}
+              .p-col-2.p-d-flex.p-flex-row.p-jc-end
+                span Close:&nbsp;
+                .p-text-bold {{ scheme.close }}
+          template(#empty) No transactions found!
+          template(#footer)
+            .p-d-flex.p-flex-row.p-jc-end
+              span Valuation as of&nbsp;
+              .p-text-black {{ scheme.valuation.date }} :&nbsp;
+              .p-text-mono.p-valuation.sm {{formatCurrency(scheme.valuation.value)}}
+          Column(field="date" header="Date")
+          Column(field="description" header="Description")
+          Column(field="amount" header="Amount" headerClass="p-text-right" bodyClass="p-text-right")
+            template(#body="slotProps") {{ formatCurrency(slotProps.data.amount) }}
+          Column(field="nav" header="NAV" headerClass="p-text-right" bodyClass="p-text-right")
+          Column(field="units" header="Units" headerClass="p-text-right" bodyClass="p-text-right")
+          Column(field="balance" header="Balance" headerClass="p-text-right" bodyClass="p-text-right")
     TabPanel(header="Raw")
       vue-json-pretty.p-text-black(:data="cas" :show-length="true" :deep="2")
 
@@ -30,11 +75,11 @@ div(v-if="cas !== null")
 
 <script lang="ts">
 import moment from "moment";
-import { PropType, defineComponent, ref, watch, toRefs } from "vue";
+import { PropType, computed, defineComponent, ref, watch, toRefs } from "vue";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 
-import { CASParserData } from "../defs";
+import { CASParserData, Folio, Scheme } from "../defs";
 
 export default defineComponent({
   components: {
@@ -78,7 +123,32 @@ export default defineComponent({
       return moment(date).format("LL");
     };
 
-    return { formatCurrency, formatDate, valuation, valuationDate };
+    const hideZeroSchemes = ref(true);
+    const displayScheme = (scheme: Scheme) => {
+      return hideZeroSchemes.value ? scheme.valuation.value > 0 : true;
+    };
+    const getSchemes = (folio: Folio): Scheme[] => {
+      return hideZeroSchemes.value
+        ? folio.schemes.filter((scheme: Scheme) => scheme.valuation.value > 0)
+        : folio.schemes;
+    };
+    const folios = computed((): Scheme[] => {
+      if (cas.value === null) return [];
+      return cas.value.folios.filter(
+        (folio: Folio) => getSchemes(folio).length > 0
+      );
+    });
+
+    return {
+      getSchemes,
+      folios,
+      formatCurrency,
+      formatDate,
+      valuation,
+      valuationDate,
+      hideZeroSchemes,
+      displayScheme,
+    };
   },
 });
 </script>
@@ -88,10 +158,23 @@ export default defineComponent({
   visibility: hidden;
 }
 .p-valuation {
-  color: var(--blue-500);
+  color: var(--green-500);
   font-size: 1.4rem;
+  &.sm {
+    font-size: 1rem;
+  }
 }
 .p-text-black {
   color: black;
+}
+
+.p-datatable {
+  .p-text-right {
+    .p-column-header-content {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+  }
 }
 </style>

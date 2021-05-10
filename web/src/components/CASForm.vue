@@ -1,19 +1,21 @@
 <template lang="pug">
-Card
-  template(#title) CASParser
-  template(#content)
-    FileUpload(name="cas[]" accept="application/pdf" ref="fileUploader")
-      template(#empty)
-        p Drag and drop CAS PDF file here or click the "Choose" button above.
-  template(#footer)
-    .p-d-flex.p-jc-end.p-ai-start
-      .p-d-flex.p-flex-column
-        Password.p-mr-4(v-model="password" :toggleMask="true"
-                        :feedback="false" placeholder="Enter CAS Password"
-                        :class="{'p-invalid': v$.$errors.length > 0}")
-        small(:class="{'p-invisible': v$.$errors.length === 0}").p-error {{ formErrorText }}
-      Button.p-mr-4(label="Submit" @click="submit"
-                    :disabled="password.length <= 5" :loading="loading")
+.p-grid.p-mt-3
+  .p-col-12.p-md-6.p-md-offset-3
+    Card
+      template(#title) CASParser
+      template(#content)
+        FileUpload(name="cas[]" accept="application/pdf" ref="fileUploader")
+          template(#empty)
+            p Drag and drop CAS PDF file here or click the "Choose" button above.
+      template(#footer)
+        .p-d-flex.p-jc-end.p-ai-start
+          .p-d-flex.p-flex-column
+            Password.p-mr-4(v-model="password" :toggleMask="true"
+                            :feedback="false" placeholder="Enter CAS Password"
+                            :class="{'p-invalid': v$.$errors.length > 0}")
+            small(:class="{'p-invisible': v$.$errors.length === 0}").p-error {{ formErrorText }}
+          Button.p-mr-4(label="Submit" @click="submit"
+                        :disabled="password.length <= 5" :loading="loading")
 ProgressBar(mode="indeterminate" :class="{'p-invisible': !loading}" style="height: 3px;")
 .p-text-center.p-error.p-mt-2(:class="{'p-invisible': serverErrorText.length === 0}") {{ serverErrorText }}
 </template>
@@ -54,7 +56,7 @@ export default defineComponent({
     const submit = async () => {
       v$.value.$touch();
       if (v$.value.$invalid) return;
-
+      if (fileUploader.value === null) return;
       try {
         loading.value = true;
         serverErrorText.value = "";
@@ -96,7 +98,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss">
 a {
   color: #42b983;
 }
@@ -111,5 +113,47 @@ code {
   padding: 2px 4px;
   border-radius: 4px;
   color: #304455;
+}
+.p-card {
+  .p-card-footer {
+    padding: 0;
+  }
+
+  .p-fileupload {
+    .p-fileupload-content {
+      padding: 0 1rem;
+    }
+
+    .p-fileupload-buttonbar {
+      text-align: right;
+    }
+  }
+
+  .p-fileupload-choose {
+    & + button {
+      display: none;
+    }
+
+    & ~ button:nth-of-type(2) {
+      display: none;
+    }
+  }
+
+  .p-fileupload-row {
+    & > div:nth-of-type(1) {
+      width: 0;
+    }
+
+    & > div:nth-of-type(2) {
+      width: 60%;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    & > div:nth-of-type(3),
+    div:nth-of-type(4) {
+      width: 20%;
+    }
+  }
 }
 </style>

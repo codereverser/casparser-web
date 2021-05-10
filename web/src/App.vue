@@ -46,42 +46,6 @@ export default defineComponent({
       "Liberation Mono", "Courier New", monospace;
   }
 
-  .p-card {
-    .p-card-footer {
-      padding: 0;
-    }
-  }
-
-  .p-fileupload {
-    .p-fileupload-content {
-      padding: 0 1rem;
-    }
-    .p-fileupload-buttonbar {
-      text-align: right;
-    }
-  }
-
-  .p-fileupload-choose {
-    & + button {
-      display: none;
-    }
-    & ~ button:nth-of-type(2) {
-      display: none;
-    }
-  }
-
-  .p-fileupload-row {
-    & > div:nth-of-type(1) {
-      width: 0;
-    }
-    & > div:nth-of-type(2) {
-      width: 60%;
-    }
-    & > div:nth-of-type(3),
-    div:nth-of-type(4) {
-      width: 20%;
-    }
-  }
   .p-invisible {
     visibility: hidden;
   }

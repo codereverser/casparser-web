@@ -32,7 +32,7 @@ interface SchemeValuation {
   value: number;
 }
 
-interface Scheme {
+export interface Scheme {
   scheme: string;
   advisor: string;
   rta_code: string;
@@ -46,7 +46,7 @@ interface Scheme {
   transactions: Transaction[];
 }
 
-interface Folio {
+export interface Folio {
   folio: string;
   amc: string;
   PAN: string;

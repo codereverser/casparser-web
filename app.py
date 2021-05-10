@@ -2,7 +2,8 @@ import asyncio
 from typing import Dict
 
 from fastapi import FastAPI, File, Form, UploadFile
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
+from mangum import Mangum
 from pydantic import BaseModel
 
 from casparser import read_cas_pdf
@@ -23,9 +24,11 @@ class CASErrorResponse(CASResponse):
 app = FastAPI()
 
 
-@app.get("/", response_class=HTMLResponse)
-def index():
-    return """<html></html>"""
+@app.get(
+    "/ping", response_class=PlainTextResponse, summary="API health check / keep-warm"
+)
+def ping():
+    return PlainTextResponse("pong")
 
 
 @app.post(
@@ -46,3 +49,6 @@ async def process_cas(password: str = Form(...), cas: UploadFile = File(...)):
     if result["status"] == "error":
         return JSONResponse(result, status_code=400)
     return result
+
+
+handler = Mangum(app)

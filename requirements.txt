@@ -1,5 +1,6 @@
 casparser[mupdf]==0.4.7a1
 fastapi==0.64.0
+mangum==0.11.0
 packaging==20.9
 pydantic==1.8.1
 python-multipart==0.0.5

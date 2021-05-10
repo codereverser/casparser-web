@@ -1,78 +1,28 @@
 <template lang="pug">
-Card
-  template(#title) CASParser
-  template(#content)
-    FileUpload(name="cas[]" accept="application/pdf" ref="fileUploader")
-      template(#empty)
-            p Drag and drop CAS pdf file here or click the "Choose" button above
-  template(#footer)
-    .p-d-flex.p-jc-end.p-ai-start
-        .p-d-flex.p-flex-column
-          Password.p-mr-4(v-model="password" :toggleMask="true"
-                          :feedback="false" placeholder="Enter CAS Password"
-                          :class="{'p-invalid': v$.$errors.length > 0}")
-          small(:class="{'p-invisible': v$.$errors.length === 0}").p-error {{ formErrorText }}
-        Button.p-mr-4(label="Submit" @click="submit"
-                      :disabled="password.length <= 5" :loading="loading")
-ProgressBar(mode="indeterminate" :class="{'p-invisible': !loading}" style="height: 3px;")
-
+CASForm(@cas-parsed="onCASParsed")
+CASViewer(:cas="casData")
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, ref } from "vue";
 
-import { useVuelidate, ValidationRuleWithoutParams } from "@vuelidate/core";
-import { minLength, required } from "@vuelidate/validators";
+import CASForm from "./components/CASForm.vue";
+import CASViewer from "./components/CASViewer.vue";
 
-interface FileUploader {
-  hasFiles: boolean;
-  files: FileList;
-}
+import { CASParserData } from "./defs";
 
 export default defineComponent({
   name: "App",
+  components: {
+    CASForm,
+    CASViewer,
+  },
   setup() {
-    const fileUploader = ref<FileUploader | null>(null);
-    const password = ref("");
-    const errorText = ref("");
-
-    const fileRequired: ValidationRuleWithoutParams = {
-      $validator: (el: FileUploader | null) => {
-        return el && el.hasFiles;
-      },
-      $message: "File missing!",
+    const casData = ref<CASParserData | null>(null);
+    const onCASParsed = (cas: CASParserData) => {
+      casData.value = cas;
     };
-    const rules = {
-      password: { required, minLength: minLength(5) },
-      fileUploader: { fileRequired },
-    };
-    const v$ = useVuelidate(rules, { fileUploader, password });
-
-    const formHasError = computed(() => {
-      return (
-        v$.value.$invalid ||
-        !(fileUploader.value && fileUploader.value!.hasFiles)
-      );
-    });
-    const formErrorText = computed(() => {
-      return v$.value.$errors.length > 0 ? v$.value.$errors[0].$message : "";
-    });
-
-    const loading = ref(false);
-    const submit = async () => {
-      v$.value.$touch();
-    };
-
-    return {
-      fileUploader,
-      password,
-      loading,
-      submit,
-      errorText,
-      formHasError,
-      formErrorText,
-      v$,
-    };
+    return { casData, onCASParsed };
   },
 });
 </script>
@@ -83,6 +33,18 @@ export default defineComponent({
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   //margin-top: 60px;
+
+  .p-font-sans {
+    font-family: Inter var, ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+      "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji";
+  }
+
+  .p-font-mono {
+    font-family: Menlo, ui-monospace, SFMono-Regular, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+  }
 
   .p-card {
     .p-card-footer {

@@ -8,7 +8,7 @@ module.exports = {
     "plugin:vue/vue3-recommended",
     "plugin:prettier-vue/recommended",
     "prettier",
-    "@vue/typescript",
+    "@vue/typescript/recommended",
   ],
   // add your custom rules here
   rules: {},

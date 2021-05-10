@@ -132,7 +132,7 @@ export default defineComponent({
         ? folio.schemes.filter((scheme: Scheme) => scheme.valuation.value > 0)
         : folio.schemes;
     };
-    const folios = computed((): Scheme[] => {
+    const folios = computed((): Folio[] => {
       if (cas.value === null) return [];
       return cas.value.folios.filter(
         (folio: Folio) => getSchemes(folio).length > 0

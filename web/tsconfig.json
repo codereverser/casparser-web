@@ -9,7 +9,9 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "noImplicitAny": false, // vue-demi [https://github.com/vueuse/vue-demi/pull/49]
+    "skipLibCheck": true, // TODO: Fix typing for vue-pretty-json and remove this option.
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
 }

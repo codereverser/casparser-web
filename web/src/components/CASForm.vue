@@ -2,11 +2,13 @@
 .p-grid.p-mt-3
   .p-col-12.p-md-6.p-md-offset-3
     Card
-      template(#title) CASParser
+      template(#title) CASParser Demo
       template(#content)
-        FileUpload(name="cas[]" accept="application/pdf" ref="fileUploader")
-          template(#empty)
-            p Drag and drop CAS PDF file here or click the "Choose" button above.
+        // TODO: move this to a separate component.
+        .p-d-flex.p-flex-row.p-jc-end.file-select
+          InputText.p-mr-4.p-col-8(placeholder="Select a file" :disabled="true" v-model="filename")
+          Button.p-mr-4.file-select(label="Select" @click="selectFile")
+          input(ref="file" type="file" @change="fileSelected" :disabled="false" accept="application/pdf")
       template(#footer)
         .p-d-flex.p-jc-end.p-ai-start
           .p-d-flex.p-flex-column
@@ -22,7 +24,6 @@ ProgressBar(mode="indeterminate" :class="{'p-invisible': !loading}" style="heigh
 
 <script lang="ts">
 import { ref, defineComponent, computed } from "vue";
-import { FileUploader } from "../defs";
 import { useVuelidate, ValidationRuleWithoutParams } from "@vuelidate/core";
 import { minLength, required } from "@vuelidate/validators";
 
@@ -30,22 +31,43 @@ export default defineComponent({
   name: "CASForm",
   emits: ["cas-parsed"],
   setup(props, { emit }) {
-    const fileUploader = ref<FileUploader | null>(null);
     const password = ref("");
     const serverErrorText = ref("");
 
+    const file = ref<HTMLElement | null>(null);
+    const filename = ref("");
+    const selectedFile = ref<File | null>(null);
+    const selectFile = () => {
+      if (file.value instanceof HTMLElement) file.value.click();
+    };
+    const fileSelected = (ev) => {
+      filename.value = "";
+      const files = ev.target.files;
+      if (files.length == 1) {
+        selectedFile.value = files[0];
+        filename.value = files[0].name;
+      }
+    };
+
     // Validations
     const fileRequired: ValidationRuleWithoutParams = {
-      $validator: (el: FileUploader | null) => {
-        return el && el.hasFiles;
+      $validator: (el): boolean => {
+        return el instanceof File;
       },
       $message: "File missing!",
     };
+    const fileMaxSize: ValidationRuleWithoutParams = {
+      $validator: (el): boolean => {
+        return el instanceof File && el.size <= 1048576;
+      },
+      $message: "File should be less than 1MB.",
+    };
+
     const rules = {
       password: { required, minLength: minLength(5) },
-      fileUploader: { fileRequired },
+      selectedFile: { fileMaxSize, fileRequired },
     };
-    const v$ = useVuelidate(rules, { fileUploader, password });
+    const v$ = useVuelidate(rules, { selectedFile, password });
 
     const formErrorText = computed(() => {
       return v$.value.$errors.length > 0 ? v$.value.$errors[0].$message : "";
@@ -56,12 +78,12 @@ export default defineComponent({
     const submit = async () => {
       v$.value.$touch();
       if (v$.value.$invalid) return;
-      if (fileUploader.value === null) return;
+      if (selectedFile.value === null) return;
       try {
         loading.value = true;
         serverErrorText.value = "";
         const data = new FormData();
-        data.append("cas", (fileUploader.value.files as FileList)[0]);
+        data.append("cas", selectedFile.value);
         data.append("password", password.value);
         const response = await fetch("/api/process/", {
           method: "POST",
@@ -86,13 +108,16 @@ export default defineComponent({
     };
 
     return {
-      fileUploader,
       password,
       loading,
       submit,
       serverErrorText,
       formErrorText,
       v$,
+      file,
+      selectFile,
+      fileSelected,
+      filename,
     };
   },
 });
@@ -119,6 +144,11 @@ code {
     padding: 0;
   }
 
+  .file-select {
+    input[type="file"] {
+      display: none;
+    }
+  }
   .p-fileupload {
     .p-fileupload-content {
       padding: 0 1rem;
@@ -126,6 +156,7 @@ code {
 
     .p-fileupload-buttonbar {
       text-align: right;
+      padding: 0.5rem 1rem;
     }
   }
 

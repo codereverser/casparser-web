@@ -103,10 +103,10 @@ export default defineComponent({
         return;
       }
       valuation.value = 0;
+      valudation.date = value.statement_period.to;
       value.folios.forEach((folio) => {
         folio.schemes.forEach((scheme) => {
           valuation.value += scheme.valuation.value;
-          valuationDate.value = scheme.valuation.date;
         });
       });
     });

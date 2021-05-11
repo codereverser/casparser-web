@@ -1,7 +1,7 @@
 import asyncio
 from typing import Dict
 
-from fastapi import FastAPI, File, Form, UploadFile
+from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import JSONResponse, PlainTextResponse
 from mangum import Mangum
 from pydantic import BaseModel

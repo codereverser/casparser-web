@@ -5,14 +5,14 @@ div(v-if="cas !== null")
   .p-grid.p-nogutter.p-jc-center
     Fieldset.p-md-5.p-col-12(legend="Investor Info" :toggleable="true")
       .p-grid
-        .p-col-6 Name
-        .p-col-6.p-text-uppercase.p-font-mono.p-text-bold {{ cas.investor_info.name }}
-        .p-col-6 Email
-        .p-col-6.p-text-uppercase.p-font-mono.p-text-bold {{ cas.investor_info.email }}
-        .p-col-6 Address
-        .p-col-6.p-text-uppercase.p-font-mono.p-text-bold {{ cas.investor_info.address }}
-        .p-col-6 Mobile
-        .p-col-6.p-text-uppercase.p-font-mono.p-text-bold {{ cas.investor_info.mobile }}
+        .p-col-3 Name
+        .p-col-9.p-text-uppercase.p-font-mono.p-text-bold {{ cas.investor_info.name }}
+        .p-col-3 Email
+        .p-col-9.p-text-uppercase.p-font-mono.p-text-bold {{ cas.investor_info.email }}
+        .p-col-3 Address
+        .p-col-9.p-text-uppercase.p-font-mono.p-text-bold {{ cas.investor_info.address }}
+        .p-col-3 Mobile
+        .p-col-9.p-text-uppercase.p-font-mono.p-text-bold {{ cas.investor_info.mobile }}
     .p-col-1
     Fieldset.p-md-5.p-col-12(legend="CAS Data" :toggleable="true")
       .p-grid

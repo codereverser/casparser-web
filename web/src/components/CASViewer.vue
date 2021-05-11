@@ -21,7 +21,7 @@ div(v-if="cas !== null")
         .p-col-6 Source
         .p-col-6.p-text-bold.p-font-mono {{ cas.file_type }}
         .p-col-6 Date
-        .p-col-6.p-text-bold.p-font-mono {{ formatDate(valuationDate) }}
+        .p-col-6.p-text-bold.p-font-mono {{ valuationDate }}
         .p-col-6 Total Valuation
         .p-col-6.p-text-bold.p-font-mono.p-valuation {{ formatCurrency(valuation) }}
   TabView

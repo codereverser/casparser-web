@@ -2,11 +2,13 @@
 
 API Demo for [casparser](https://github.com/codereverser/casparser)
 
+⭐ **Demo** :- https://cas.atomcoder.com  
+
 ## Dependencies
 - backend
-  - python > 3.8
+  - python >= 3.8
 - frontend
-  - node > 12
+  - node >= 12
 
 ## Setup
 

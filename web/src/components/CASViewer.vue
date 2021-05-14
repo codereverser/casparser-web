@@ -48,7 +48,7 @@ div(v-if="cas !== null")
                                :value="scheme.transactions" :paginator="scheme.transactions.length > 5" :rows="10")
           template(#header)
             .p-grid
-              .p-col-8 {{ scheme.scheme }} - {{ scheme.valuation.value }}
+              .p-col-8 {{ scheme.scheme }}
               .p-col-2.p-d-flex.p-flex-row.p-jc-end
                 span Open:&nbsp;
                 .p-text-bold {{ scheme.open }}

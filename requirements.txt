@@ -1,5 +1,5 @@
 casparser[mupdf]==0.4.7a1
-fastapi==0.64.0
+fastapi==0.65.2
 mangum==0.11.0
 packaging==20.9
 pydantic==1.8.2

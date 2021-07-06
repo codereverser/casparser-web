@@ -79,13 +79,13 @@ div(v-if="cas !== null")
               .p-text-bold.p-col-3 {{fy}}
               .p-col-3.p-d-flex.p-flex-row.p-jc-around.p-align-center
                 span LTCG:&nbsp;
-                .p-text-bold(:class="{'p-text-loss': gains[fy].total.ltcg < 0, 'p-text-profit': gains[fy].total.ltcg > 0}") {{ formatCurrency(gains[fy].total.ltcg) }}
+                .p-text-bold(:class="{'p-error': gains[fy].total.ltcg < 0, 'p-text-profit': gains[fy].total.ltcg > 0}") {{ formatCurrency(gains[fy].total.ltcg) }}
               .p-col-3.p-d-flex.p-flex-row.p-jc-around.p-align-center
                 span LTCG(Taxable):&nbsp;
-                .p-text-bold(:class="{'p-text-loss': gains[fy].total.tax_ltcg < 0, 'p-text-profit': gains[fy].total.tax_ltcg > 0}") {{ formatCurrency(gains[fy].total.tax_ltcg) }}
+                .p-text-bold(:class="{'p-error': gains[fy].total.tax_ltcg < 0, 'p-text-profit': gains[fy].total.tax_ltcg > 0}") {{ formatCurrency(gains[fy].total.tax_ltcg) }}
               .p-col-3.p-d-flex.p-flex-row.p-jc-around.p-align-center
                 span STCG:&nbsp;
-                .p-text-bold(:class="{'p-text-loss': gains[fy].total.stcg < 0, 'p-text-profit': gains[fy].total.stcg > 0}") {{ formatCurrency(gains[fy].total.stcg) }}
+                .p-text-bold(:class="{'p-error': gains[fy].total.stcg < 0, 'p-text-profit': gains[fy].total.stcg > 0}") {{ formatCurrency(gains[fy].total.stcg) }}
           DataTable.p-datatable-sm.p-my-4(v-for="fund in gains[fy].funds" :key="fund.fund.isin" :autoLayout="true"
                                           :value="fund.txns" :paginator="fund.txns.length > 5" :rows="10")
             template(#header)
@@ -101,13 +101,13 @@ div(v-if="cas !== null")
               .p-grid
                 .p-col-4.p-d-flex.p-flex-row.p-jc-around.p-align-center
                   span LTCG:&nbsp;
-                  .p-text-bold(:class="{'p-text-loss': fund.total.ltcg < 0, 'p-text-profit': fund.total.ltcg > 0}") {{ formatCurrency(fund.total.ltcg) }}
+                  .p-text-bold(:class="{'p-error': fund.total.ltcg < 0, 'p-text-profit': fund.total.ltcg > 0}") {{ formatCurrency(fund.total.ltcg) }}
                 .p-col-4.p-d-flex.p-flex-row.p-jc-around.p-align-center
                   span LTCG (Taxable):&nbsp;
-                  .p-text-bold(:class="{'p-text-loss': fund.total.tax_ltcg < 0, 'p-text-profit': fund.total.tax_ltcg > 0}") {{ formatCurrency(fund.total.tax_ltcg) }}
+                  .p-text-bold(:class="{'p-error': fund.total.tax_ltcg < 0, 'p-text-profit': fund.total.tax_ltcg > 0}") {{ formatCurrency(fund.total.tax_ltcg) }}
                 .p-col-4.p-d-flex.p-flex-row.p-jc-around.p-align-center
                   span STCG:&nbsp;
-                  .p-text-bold(:class="{'p-text-loss': fund.total.stcg < 0, 'p-text-profit': fund.total.stcg > 0}") {{ formatCurrency(fund.total.stcg) }}
+                  .p-text-bold(:class="{'p-error': fund.total.stcg < 0, 'p-text-profit': fund.total.stcg > 0}") {{ formatCurrency(fund.total.stcg) }}
             template(#empty) No transactions found!
             Column(field="buy_date" header="Purchase Date")
             Column(field="buy_price" header="Purchase Value" headerClass="p-text-right" bodyClass="p-text-right")
@@ -236,9 +236,6 @@ export default defineComponent({
 
 .p-text-profit {
   color: var(--green-500);
-}
-.p-text-loss {
-  color: var(--red-500);
 }
 
 .p-datatable {

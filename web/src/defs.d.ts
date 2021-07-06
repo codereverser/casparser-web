@@ -62,3 +62,50 @@ export interface CASParserData {
   cas_type: string;
   file_type: string;
 }
+
+export interface GainEntry {
+  fy: string;
+  fund: string;
+  isin: string;
+  type: string;
+  buy_date: string;
+  buy_price: number;
+  stamp_duty: number;
+  sell_date: string;
+  sell_price: number;
+  coa: number;
+  stt: number;
+  units: number;
+  ltcg: number;
+  stcg: number;
+  tax_ltcg: number;
+}
+
+export interface Fund {
+  name: str;
+  isin: str;
+  type: str;
+}
+
+export interface TotalGains {
+  ltcg: number;
+  stcg: number;
+  tax_ltcg: number;
+  tax_stcg: number;
+}
+
+export interface FundGains {
+  fy: str;
+  fund: Fund;
+  total: TotalGains;
+  txns: GainEntry[];
+}
+
+export interface FYSummary {
+  funds: FundGains[];
+  total: TotalGains;
+}
+
+export interface GainsData {
+  [fy: string]: FYSummary;
+}

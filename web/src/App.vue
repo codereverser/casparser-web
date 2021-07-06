@@ -1,6 +1,6 @@
 <template lang="pug">
 CASForm(@cas-parsed="onCASParsed")
-CASViewer(:cas="casData")
+CASViewer(:cas="casData" :gains="gainsData")
 </template>
 
 <script lang="ts">
@@ -9,7 +9,7 @@ import { defineComponent, ref } from "vue";
 import CASForm from "./components/CASForm.vue";
 import CASViewer from "./components/CASViewer.vue";
 
-import { CASParserData } from "./defs";
+import { CASParserData, GainsData } from "./defs";
 
 export default defineComponent({
   name: "App",
@@ -19,10 +19,18 @@ export default defineComponent({
   },
   setup() {
     const casData = ref<CASParserData | null>(null);
-    const onCASParsed = (cas: CASParserData) => {
+    const gainsData = ref<GainsData | null>(null);
+    const onCASParsed = ({
+      cas,
+      gains,
+    }: {
+      cas: CASParserData;
+      gains: GainsData;
+    }) => {
       casData.value = cas;
+      gainsData.value = gains;
     };
-    return { casData, onCASParsed };
+    return { casData, gainsData, onCASParsed };
   },
 });
 </script>

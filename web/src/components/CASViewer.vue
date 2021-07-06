@@ -70,7 +70,60 @@ div(v-if="cas !== null")
           Column(field="balance" header="Balance" headerClass="p-text-right" bodyClass="p-text-right")
     TabPanel(header="Raw")
       vue-json-pretty.p-text-black(:data="cas" :show-length="true" :deep="2")
-
+    TabPanel(header="Capital Gains")
+      .p-text-center.p-error.p-mt-2(v-if="gains === null") Capital Gains Report is available only for complete CAS Reports. i.e. the opening balance of all schemes should be zero
+      .p-pb-4(v-else)
+        Panel(v-for="(fy, index) in fys" :key="fy" toggleable :collapsed="index > 0")
+          template(#header)
+            .p-d-flex.p-flex-row.p-grid(style="width: 100%;")
+              .p-text-bold.p-col-3 {{fy}}
+              .p-col-3.p-d-flex.p-flex-row.p-jc-around.p-align-center
+                span LTCG:&nbsp;
+                .p-text-bold(:class="{'p-text-loss': gains[fy].total.ltcg < 0, 'p-text-profit': gains[fy].total.ltcg > 0}") {{ formatCurrency(gains[fy].total.ltcg) }}
+              .p-col-3.p-d-flex.p-flex-row.p-jc-around.p-align-center
+                span LTCG(Taxable):&nbsp;
+                .p-text-bold(:class="{'p-text-loss': gains[fy].total.tax_ltcg < 0, 'p-text-profit': gains[fy].total.tax_ltcg > 0}") {{ formatCurrency(gains[fy].total.tax_ltcg) }}
+              .p-col-3.p-d-flex.p-flex-row.p-jc-around.p-align-center
+                span STCG:&nbsp;
+                .p-text-bold(:class="{'p-text-loss': gains[fy].total.stcg < 0, 'p-text-profit': gains[fy].total.stcg > 0}") {{ formatCurrency(gains[fy].total.stcg) }}
+          DataTable.p-datatable-sm.p-my-4(v-for="fund in gains[fy].funds" :key="fund.fund.isin" :autoLayout="true"
+                                          :value="fund.txns" :paginator="fund.txns.length > 5" :rows="10")
+            template(#header)
+              .p-grid
+                .p-col-8 {{ fund.fund.name }}
+                .p-col-2.p-d-flex.p-flex-row.p-jc-end
+                  span ISIN:&nbsp;
+                  .p-text-bold {{ fund.fund.isin }}
+                .p-col-2.p-d-flex.p-flex-row.p-jc-end
+                  span Type:&nbsp;
+                  .p-text-bold {{ fund.fund.type }}
+            template(#footer)
+              .p-grid
+                .p-col-4.p-d-flex.p-flex-row.p-jc-around.p-align-center
+                  span LTCG:&nbsp;
+                  .p-text-bold(:class="{'p-text-loss': fund.total.ltcg < 0, 'p-text-profit': fund.total.ltcg > 0}") {{ formatCurrency(fund.total.ltcg) }}
+                .p-col-4.p-d-flex.p-flex-row.p-jc-around.p-align-center
+                  span LTCG (Taxable):&nbsp;
+                  .p-text-bold(:class="{'p-text-loss': fund.total.tax_ltcg < 0, 'p-text-profit': fund.total.tax_ltcg > 0}") {{ formatCurrency(fund.total.tax_ltcg) }}
+                .p-col-4.p-d-flex.p-flex-row.p-jc-around.p-align-center
+                  span STCG:&nbsp;
+                  .p-text-bold(:class="{'p-text-loss': fund.total.stcg < 0, 'p-text-profit': fund.total.stcg > 0}") {{ formatCurrency(fund.total.stcg) }}
+            template(#empty) No transactions found!
+            Column(field="buy_date" header="Purchase Date")
+            Column(field="buy_price" header="Purchase Value" headerClass="p-text-right" bodyClass="p-text-right")
+              template(#body="slotProps") {{ formatCurrency(slotProps.data.buy_price) }}
+            Column(field="coa" header="Acquisition Value" headerClass="p-text-right" bodyClass="p-text-right")
+              template(#body="slotProps") {{ formatCurrency(slotProps.data.coa) }}
+            Column(field="units" header="Units")
+            Column(field="sell_date" header="Sale Date")
+            Column(field="sell_price" header="Sale Value" headerClass="p-text-right" bodyClass="p-text-right")
+              template(#body="slotProps") {{ formatCurrency(slotProps.data.sell_price) }}
+            Column(field="ltcg" header="LTCG" headerClass="p-text-right" bodyClass="p-text-right")
+              template(#body="slotProps") {{ formatCurrency(slotProps.data.ltcg) }}
+            Column(field="tax_ltcg" header="LTCG(Taxable)" headerClass="p-text-right" bodyClass="p-text-right")
+              template(#body="slotProps") {{ formatCurrency(slotProps.data.tax_ltcg) }}
+            Column(field="stcg" header="STCG" headerClass="p-text-right" bodyClass="p-text-right")
+              template(#body="slotProps") {{ formatCurrency(slotProps.data.stcg) }}
 </template>
 
 <script lang="ts">
@@ -79,7 +132,7 @@ import { PropType, computed, defineComponent, ref, watch, toRefs } from "vue";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 
-import { CASParserData, Folio, Scheme } from "../defs";
+import { CASParserData, GainsData, Folio, Scheme } from "../defs";
 
 export default defineComponent({
   components: {
@@ -90,12 +143,16 @@ export default defineComponent({
       type: Object as PropType<CASParserData | null>,
       default: null,
     },
+    gains: {
+      type: Object as PropType<GainsData | null>,
+      default: null,
+    },
   },
   setup: function (props) {
     const valuation = ref(0);
     const valuationDate = ref<Date | string>(new Date().toDateString());
 
-    const { cas } = toRefs(props);
+    const { cas, gains } = toRefs(props);
     watch(cas, (value: CASParserData | null) => {
       if (value === null) {
         valuation.value = 0;
@@ -113,8 +170,8 @@ export default defineComponent({
 
     const formatCurrency = (amount: number) => {
       return amount.toLocaleString("en-IN", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
         style: "currency",
         currency: "INR",
       });
@@ -139,6 +196,14 @@ export default defineComponent({
       );
     });
 
+    const fys = computed((): string[] => {
+      if (gains.value === null) return [];
+      let keys = Object.keys(gains.value);
+      keys.sort();
+      keys.reverse();
+      return keys;
+    });
+
     return {
       getSchemes,
       folios,
@@ -148,6 +213,7 @@ export default defineComponent({
       valuationDate,
       hideZeroSchemes,
       displayScheme,
+      fys,
     };
   },
 });
@@ -166,6 +232,13 @@ export default defineComponent({
 }
 .p-text-black {
   color: black;
+}
+
+.p-text-profit {
+  color: var(--green-500);
+}
+.p-text-loss {
+  color: var(--red-500);
 }
 
 .p-datatable {

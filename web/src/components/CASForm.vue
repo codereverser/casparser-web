@@ -90,9 +90,9 @@ export default defineComponent({
           body: data,
         });
         const casData = await response.json();
-        const { status, message, cas } = casData;
+        const { status, message, cas, gains } = casData;
         if (status === "OK") {
-          emit("cas-parsed", cas);
+          emit("cas-parsed", { cas, gains });
         } else {
           serverErrorText.value = message;
         }

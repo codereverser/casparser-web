@@ -1,57 +1,42 @@
 import asyncio
-from datetime import date
-from decimal import Decimal
 import itertools
-from typing import Dict, List, Optional
-from typing_extensions import TypedDict
+from typing import Optional
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
 from mangum import Mangum
-from pydantic import BaseModel
 
 from casparser import read_cas_pdf, CapitalGainsReport
 from casparser.analysis.gains import Fund
 from casparser.exceptions import IncompleteCASError
-from casparser.types import CASParserDataType
 
-
-class FundType(TypedDict):
-    name: str
-    isin: str
-    type: str
-
-
-class GainEntryType(TypedDict):
-    fy: str
-    fund: str
-    isin: str
-    type: str
-    purchase_date: date
-    purchase_value: Decimal
-    stamp_duty: Decimal
-    sale_date: date
-    sale_value: Decimal
-    stt: Decimal
-    units: Decimal
-    ltcg: Decimal
-    stcg: Decimal
-    tax_ltcg: Decimal
-
-
-class CASResponse(BaseModel):
-    status: str
-    message: str
-    cas: CASParserDataType
-    gains: Optional[Dict]
-
-
-class CASErrorResponse(CASResponse):
-    status: str = "error"
-    cas: Dict
+from api.settings import APISettings, BASE_DIR
+from api.types import CASResponse, CASErrorResponse
 
 
 app = FastAPI()
+settings = APISettings()
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    headers = request.headers
+    if "origin" not in headers:
+        return JSONResponse(
+            {"status": "error", "message": "Forbidden!"}, status_code=403
+        )
+    response = await call_next(request)
+    return response
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[str(url) for url in settings.CORS_ORIGINS],
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 
 
 @app.get(
@@ -123,12 +108,13 @@ async def process_cas(password: str = Form(...), cas: UploadFile = File(...)):
     loop = asyncio.get_running_loop()
     result = {"status": "error", "message": "Unknown Error", "cas": {}, "gains": None}
     try:
-        cas = await loop.run_in_executor(None, read_cas_pdf, cas.file, password)
+        cas_dict = await loop.run_in_executor(None, read_cas_pdf, cas.file, password)
+        result.update(status="OK", message="", cas=cas_dict)
         try:
-            cg_report = CapitalGainsReport(cas)
+            cg_report = CapitalGainsReport(cas_dict)
         except IncompleteCASError:
             cg_report = None
-        result.update(status="OK", message="", cas=cas, gains=prepare_gains(cg_report))
+        result.update(gains=prepare_gains(cg_report))
     except Exception as e:
         result.update(message=str(e))
     if result["status"] == "error":

@@ -27,11 +27,11 @@ class GainEntryType(TypedDict):
     fund: str
     isin: str
     type: str
-    buy_date: date
-    buy_price: Decimal
+    purchase_date: date
+    purchase_value: Decimal
     stamp_duty: Decimal
-    sell_date: date
-    sell_price: Decimal
+    sale_date: date
+    sale_value: Decimal
     stt: Decimal
     units: Decimal
     ltcg: Decimal
@@ -90,12 +90,12 @@ def prepare_gains(cg: Optional[CapitalGainsReport]):
             total["tax_ltcg"] += txn.ltcg_taxable
             data["txns"].append(
                 {
-                    "buy_date": txn.buy_date,
-                    "buy_price": txn.buy_price,
+                    "buy_date": txn.purchase_date,
+                    "buy_price": txn.purchase_value,
                     "units": txn.units,
                     "coa": txn.coa,
-                    "sell_date": txn.sell_date,
-                    "sell_price": txn.sell_price,
+                    "sell_date": txn.sale_date,
+                    "sell_price": txn.sale_value,
                     "ltcg": txn.ltcg,
                     "stcg": txn.stcg,
                     "tax_ltcg": txn.ltcg_taxable,

@@ -32,7 +32,13 @@ source venv/bin/activate
 pip3 install -U setuptools wheel pip
 pip3 install -r requirements.txt
 ```
-2. Deploy API
+
+2. Setup .env (Optional)
+
+Copy `env.example` to .env and update values as required. This step is optional 
+and probably would be required only for production deployments
+
+3. Deploy API
 ```
 uvicorn app:app --reload
 ```

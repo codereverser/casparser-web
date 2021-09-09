@@ -90,11 +90,18 @@ export default defineComponent({
           body: data,
         });
         const casData = await response.json();
-        const { status, message, cas, gains } = casData;
-        if (status === "OK") {
-          emit("cas-parsed", { cas, gains });
+        const { status, message, cas, gains, stats } = casData;
+        if (status !== "error") {
+          emit("cas-parsed", { cas, gains, stats, status, message });
         } else {
           serverErrorText.value = message;
+          emit("cas-parsed", {
+            cas: null,
+            gains: null,
+            stats: null,
+            status: status,
+            message: message,
+          });
         }
       } catch (error) {
         if (Object.prototype.hasOwnProperty.call(error, "message")) {

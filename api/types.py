@@ -35,6 +35,7 @@ class CASResponse(BaseModel):
     message: str
     cas: CASParserDataType
     gains: Optional[Dict]
+    stats: Optional[Dict]
 
 
 class CASErrorResponse(CASResponse):

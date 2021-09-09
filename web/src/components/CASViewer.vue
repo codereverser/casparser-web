@@ -22,8 +22,11 @@ div(v-if="cas !== null")
         .p-col-6.p-text-bold.p-font-mono {{ cas.file_type }}
         .p-col-6 Date
         .p-col-6.p-text-bold.p-font-mono {{ valuationDate }}
+        .p-col-6 Total Invested
+        .p-col-6.p-text-bold.p-font-mono.p-valuation {{ stats.invested ? formatCurrency(stats.invested) : 'N/A' }}
         .p-col-6 Total Valuation
-        .p-col-6.p-text-bold.p-font-mono.p-valuation {{ formatCurrency(valuation) }}
+        .p-col-6.p-text-bold.p-font-mono.p-valuation {{ stats.current ? formatCurrency(stats.current) : formatCurrency(valuation) }}
+
   TabView
     TabPanel(header="Table")
       .p-d-flex.p-flex-row.p-jc-end.p-ai-center.p-m-2
@@ -132,7 +135,7 @@ import { PropType, computed, defineComponent, ref, watch, toRefs } from "vue";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 
-import { CASParserData, GainsData, Folio, Scheme } from "../defs";
+import { CASParserData, GainsData, Folio, Scheme, StatsData } from "../defs";
 
 export default defineComponent({
   components: {
@@ -145,6 +148,10 @@ export default defineComponent({
     },
     gains: {
       type: Object as PropType<GainsData | null>,
+      default: null,
+    },
+    stats: {
+      type: Object as PropType<StatsData | null>,
       default: null,
     },
   },
@@ -169,12 +176,14 @@ export default defineComponent({
     });
 
     const formatCurrency = (amount: number) => {
-      return amount.toLocaleString("en-IN", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-        style: "currency",
-        currency: "INR",
-      });
+      return amount
+        ? amount.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+            style: "currency",
+            currency: "INR",
+          })
+        : "N/A";
     };
     const formatDate = (date: Date | string) => {
       return moment(date).format("LL");

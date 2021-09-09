@@ -1,5 +1,6 @@
 import asyncio
 import itertools
+import time
 from typing import Optional
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
@@ -106,15 +107,30 @@ def prepare_gains(cg: Optional[CapitalGainsReport]):
 async def process_cas(password: str = Form(...), cas: UploadFile = File(...)):
     """Process CAS PDF file."""
     loop = asyncio.get_running_loop()
-    result = {"status": "error", "message": "Unknown Error", "cas": {}, "gains": None}
+    result = {
+        "status": "error",
+        "message": "Unknown Error",
+        "cas": {},
+        "gains": None,
+        "stats": {},
+    }
     try:
         cas_dict = await loop.run_in_executor(None, read_cas_pdf, cas.file, password)
         result.update(status="OK", message="", cas=cas_dict)
         try:
             cg_report = CapitalGainsReport(cas_dict)
         except IncompleteCASError:
-            cg_report = None
-        result.update(gains=prepare_gains(cg_report))
+            result.update(status="warn", message="Incomplete CAS")
+        else:
+            result.update(gains=prepare_gains(cg_report))
+            result.update(
+                stats={
+                    "invested": cg_report.invested_amount,
+                    "current": cg_report.current_value,
+                }
+            )
+            if cg_report.has_error():
+                result.update(status="warn", message=cg_report.errors)
     except Exception as e:
         result.update(message=str(e))
     if result["status"] == "error":

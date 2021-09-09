@@ -1,8 +1,7 @@
 aiofiles==0.7.0
-casparser[mupdf]==0.5.0
-fastapi==0.66.0
-mangum==0.11.0
-packaging==20.9
+casparser[mupdf]==0.5.3
+fastapi==0.68.1
+mangum==0.12.2
 pydantic==1.8.2
 python-multipart==0.0.5
-uvicorn[standard]==0.14.0
+uvicorn[standard]==0.15.0

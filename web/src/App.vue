@@ -17,7 +17,7 @@
           a(href="https://mfs.kfintech.com/investor/General/ConsolidatedAccountStatement" target="_blank") Karvy/KFINTECH
 
 CASForm(@cas-parsed="onCASParsed")
-CASViewer(:cas="casData" :gains="gainsData")
+CASViewer(:cas="casData" :gains="gainsData" :stats="statsData")
 </template>
 
 <script lang="ts">
@@ -26,7 +26,7 @@ import { defineComponent, ref } from "vue";
 import CASForm from "./components/CASForm.vue";
 import CASViewer from "./components/CASViewer.vue";
 
-import { CASParserData, GainsData } from "./defs";
+import { CASParserData, GainsData, StatsData } from "./defs";
 
 export default defineComponent({
   name: "App",
@@ -37,17 +37,36 @@ export default defineComponent({
   setup() {
     const casData = ref<CASParserData | null>(null);
     const gainsData = ref<GainsData | null>(null);
+    const statusData = ref("");
+    const messageData = ref<string[]>([]);
+    const statsData = ref<StatsData | null>(null);
     const onCASParsed = ({
       cas,
       gains,
+      stats,
+      status,
+      message,
     }: {
       cas: CASParserData;
       gains: GainsData;
+      stats: StatsData | null;
+      status: string;
+      message: string[];
     }) => {
       casData.value = cas;
       gainsData.value = gains;
+      statusData.value = status;
+      statsData.value = stats;
+      messageData.value = message;
     };
-    return { casData, gainsData, onCASParsed };
+    return {
+      casData,
+      gainsData,
+      statusData,
+      statsData,
+      messageData,
+      onCASParsed,
+    };
   },
 });
 </script>

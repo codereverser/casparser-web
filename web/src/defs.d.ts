@@ -109,3 +109,8 @@ export interface FYSummary {
 export interface GainsData {
   [fy: string]: FYSummary;
 }
+
+export interface StatsData {
+  invested: number;
+  current: number;
+}

@@ -23,9 +23,9 @@ div(v-if="cas !== null")
         .p-col-6 Date
         .p-col-6.p-text-bold.p-font-mono {{ valuationDate }}
         .p-col-6 Total Invested
-        .p-col-6.p-text-bold.p-font-mono.p-valuation {{ stats.invested ? formatCurrency(stats.invested) : 'N/A' }}
+        .p-col-6.p-text-bold.p-font-mono.p-valuation {{ (stats && stats.invested) ? formatCurrency(stats.invested) : 'N/A' }}
         .p-col-6 Total Valuation
-        .p-col-6.p-text-bold.p-font-mono.p-valuation {{ stats.current ? formatCurrency(stats.current) : formatCurrency(valuation) }}
+        .p-col-6.p-text-bold.p-font-mono.p-valuation {{ (stats && stats.current) ? formatCurrency(stats.current) : formatCurrency(valuation) }}
 
   TabView
     TabPanel(header="Table")

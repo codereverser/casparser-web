@@ -55,13 +55,14 @@ export interface Folio {
   schemes: Scheme[];
 }
 
-export interface CASParserData {
+type CASParserData = {
   statement_period: StatementPeriod;
   folios: Folio[];
   investor_info: InvestorInfo;
   cas_type: string;
   file_type: string;
 }
+export type { CASParserData };
 
 export interface GainEntry {
   fy: string;

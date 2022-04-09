@@ -10,7 +10,7 @@
   "dependencies": {
     "@vuelidate/core": "^2.0.0-alpha.24",
     "@vuelidate/validators": "^2.0.0-alpha.21",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "primeflex": "^2.0.0",
     "primeicons": "^4.1.0",
     "primevue": "^3.6.4",

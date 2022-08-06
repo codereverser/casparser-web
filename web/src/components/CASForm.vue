@@ -1,25 +1,25 @@
 <template lang="pug">
-.p-grid.p-mt-3
-  .p-col-12.p-md-6.p-md-offset-3
+.grid.mt-3
+  .col-12(class="md:col-offset-3 md:col-6")
     Card
       template(#title) CASParser Demo
       template(#content)
         // TODO: move this to a separate component.
-        .p-d-flex.p-flex-row.p-jc-end.file-select
-          InputText.p-mr-4.p-col-8(placeholder="Select a file" :disabled="true" v-model="filename")
-          Button.p-mr-4.file-select(label="Select" @click="selectFile")
+        .flex.flex-row.justify-content-end.file-select
+          InputText.mr-4.col-8(placeholder="Select a file" :disabled="true" v-model="filename")
+          Button.mr-4.file-select(label="Select" @click="selectFile")
           input(ref="file" type="file" @change="fileSelected" :disabled="false" accept="application/pdf")
       template(#footer)
-        .p-d-flex.p-jc-end.p-ai-start
-          .p-d-flex.p-flex-column
-            Password.p-mr-4(v-model="password" :toggleMask="true"
+        .flex.justify-content-end.align-items-start
+          .flex.flex-column
+            Password.mr-4(v-model="password" :toggleMask="true"
                             :feedback="false" placeholder="Enter CAS Password"
                             :class="{'p-invalid': v$.$errors.length > 0}")
-            small(:class="{'p-invisible': v$.$errors.length === 0}").p-error {{ formErrorText }}
-          Button.p-mr-4(label="Submit" @click="submit"
+            small(:class="{'p-invisible': v$.$errors.length === 0}").text-red-400 {{ formErrorText }}
+          Button.mr-4(label="Submit" @click="submit"
                         :disabled="password.length <= 5" :loading="loading")
-ProgressBar(mode="indeterminate" :class="{'p-invisible': !loading}" style="height: 3px;")
-.p-text-center.p-error.p-mt-2(:class="{'p-invisible': serverErrorText.length === 0}") {{ serverErrorText }}
+ProgressBar(mode="indeterminate" :class="{'invisible': !loading}" style="height: 3px;")
+.text-center.text-red-400.mt-2(:class="{'invisible': serverErrorText.length === 0}") {{ serverErrorText }}
 </template>
 
 <script lang="ts">

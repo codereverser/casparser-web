@@ -1,17 +1,17 @@
 <template lang="pug">
-.p-grid.p-jc-center.p-mt-6
-  Card.p-col-6(v-if="casData === null")
+.grid.justify-content-center.mt-6
+  Card.col-6(v-if="casData === null")
     template(#title) CASParser Web
     template(#subtitle) A simple demo for&nbsp;
       a(href="https://github.com/codereverser/casparser" target="_blank") casparser
     template(#content)
       p Parse Consolidated Account Statements (CAS) from CAMS/Karvy and view
       ol
-        li.p-my-2 Portfolio Summary and Valuation
+        li.my-2 Portfolio Summary and Valuation
         li Capital Gains report
-      .p-text-bold Generate CAS pdf files from either of the following sources
+      .text-bold Generate CAS pdf files from either of the following sources
       ol
-        li.p-my-2
+        li.my-2
           a(href="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement" target="_blank") CAMS
         li
           a(href="https://mfs.kfintech.com/investor/General/ConsolidatedAccountStatement" target="_blank") Karvy/KFINTECH
@@ -90,7 +90,7 @@ export default defineComponent({
       "Liberation Mono", "Courier New", monospace;
   }
 
-  .p-invisible {
+  .invisible {
     visibility: hidden;
   }
 }

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.0-alpha.24",
-    "@vuelidate/validators": "^2.0.0-alpha.21",
+    "@vuelidate/validators": "^2.0.0-alpha.22",
     "moment": "^2.29.4",
     "primeflex": "^2.0.0",
     "primeicons": "^4.1.0",

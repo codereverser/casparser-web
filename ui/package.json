@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@volar/vue-language-plugin-pug": "latest",
+    "nuxt": "^3.1.2",
+    "pug": "^3.0.2",
+    "sass": "^1.58.3"
+  },
+  "dependencies": {
+    "@vuelidate/core": "^2.0.0",
+    "@vuelidate/validators": "^2.0.0",
+    "moment": "^2.29.4",
+    "primeflex": "^3.3.0",
+    "primeicons": "^6.0.1",
+    "primevue": "^3",
+    "vue-json-pretty": "^2.2.3"
+  }
+}

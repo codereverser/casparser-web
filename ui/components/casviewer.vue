@@ -32,7 +32,7 @@ div(v-if="cas !== null")
       .flex.flex-row.justify-content-end.align-items-center.m-2
         .font-bold.mr-2 Hide zero-balance funds?
         InputSwitch(v-model="hideZeroSchemes")
-      Panel.pb-4(v-for="(folio, index) in folios" :key="folio.folio" :toggleable="true")
+      Panel.pb-4(v-for="folio in folios" :key="folio.folio" :toggleable="true")
         template(#header)
           .flex.flex-row.justify-content-between(style="width: 100%;")
             .flex.flex-row.justify-content-around.align-center
@@ -47,7 +47,8 @@ div(v-if="cas !== null")
             .flex.flex-row.justify-content-around.align-center
               span PANKYC:&nbsp;
               .font-bold {{ folio.PANKYC }}
-        DataTable.p-datatable-sm(v-for="scheme in getSchemes(folio)" :key="scheme.scheme" :autoLayout="true"
+        DataTable.p-datatable-sm(
+v-for="scheme in getSchemes(folio)" :key="scheme.scheme" :auto-layout="true"
                                :value="scheme.transactions" :paginator="scheme.transactions.length > 5" :rows="10")
           template(#header)
             .grid
@@ -66,11 +67,11 @@ div(v-if="cas !== null")
               .p-font-mono.p-valuation.sm {{formatCurrency(scheme.valuation.value)}}
           Column(field="date" header="Date")
           Column(field="description" header="Description")
-          Column(field="amount" header="Amount" headerClass="text-right" bodyClass="text-right")
+          Column(field="amount" header="Amount" header-class="text-right" body-class="text-right")
             template(#body="slotProps") {{ formatCurrency(slotProps.data.amount) }}
-          Column(field="nav" header="NAV" headerClass="text-right" bodyClass="text-right")
-          Column(field="units" header="Units" headerClass="text-right" bodyClass="text-right")
-          Column(field="balance" header="Balance" headerClass="text-right" bodyClass="text-right")
+          Column(field="nav" header="NAV" header-class="text-right" body-class="text-right")
+          Column(field="units" header="Units" header-class="text-right" body-class="text-right")
+          Column(field="balance" header="Balance" header-class="text-right" body-class="text-right")
     TabPanel(header="Raw")
       vue-json-pretty.text-black(:data="cas" :show-length="true" :deep="2")
     TabPanel(header="Capital Gains")
@@ -89,7 +90,8 @@ div(v-if="cas !== null")
               .col-3.flex.flex-row.justify-content-around.align-center
                 span STCG:&nbsp;
                 .font-bold(:class="{'text-red-400': gains[fy].total.stcg < 0, 'p-text-profit': gains[fy].total.stcg > 0}") {{ formatCurrency(gains[fy].total.stcg) }}
-          DataTable.datatable-sm.my-4(v-for="fund in gains[fy].funds" :key="fund.fund.isin" :autoLayout="true"
+          DataTable.datatable-sm.my-4(
+v-for="fund in gains[fy].funds" :key="fund.fund.isin" :auto-layout="true"
                                           :value="fund.txns" :paginator="fund.txns.length > 5" :rows="10")
             template(#header)
               .grid
@@ -113,25 +115,31 @@ div(v-if="cas !== null")
                   .font-bold(:class="{'text-red-400': fund.total.stcg < 0, 'p-text-profit': fund.total.stcg > 0}") {{ formatCurrency(fund.total.stcg) }}
             template(#empty) No transactions found!
             Column(field="buy_date" header="Purchase Date")
-            Column(field="buy_price" header="Purchase Value" headerClass="text-right" bodyClass="text-right")
+            Column(field="buy_price" header="Purchase Value" header-class="text-right" body-class="text-right")
               template(#body="slotProps") {{ formatCurrency(slotProps.data.buy_price) }}
-            Column(field="coa" header="Acquisition Value" headerClass="text-right" bodyClass="text-right")
+            Column(field="coa" header="Acquisition Value" header-class="text-right" body-class="text-right")
               template(#body="slotProps") {{ formatCurrency(slotProps.data.coa) }}
             Column(field="units" header="Units")
             Column(field="sell_date" header="Sale Date")
-            Column(field="sell_price" header="Sale Value" headerClass="text-right" bodyClass="text-right")
+            Column(field="sell_price" header="Sale Value" header-class="text-right" body-class="text-right")
               template(#body="slotProps") {{ formatCurrency(slotProps.data.sell_price) }}
-            Column(field="ltcg" header="LTCG" headerClass="text-right" bodyClass="text-right")
+            Column(field="ltcg" header="LTCG" header-class="text-right" body-class="text-right")
               template(#body="slotProps") {{ formatCurrency(slotProps.data.ltcg) }}
-            Column(field="tax_ltcg" header="LTCG(Taxable)" headerClass="text-right" bodyClass="text-right")
+            Column(field="tax_ltcg" header="LTCG(Taxable)" header-class="text-right" body-class="text-right")
               template(#body="slotProps") {{ formatCurrency(slotProps.data.tax_ltcg) }}
-            Column(field="stcg" header="STCG" headerClass="text-right" bodyClass="text-right")
+            Column(field="stcg" header="STCG" header-class="text-right" body-class="text-right")
               template(#body="slotProps") {{ formatCurrency(slotProps.data.stcg) }}
 </template>
 
 <script setup lang="ts">
-import moment from 'moment'
-import type { CASParserData, GainsData, Folio, Scheme, StatsData } from "../types/defs";
+// import moment from "moment"
+import type {
+  CASParserData,
+  GainsData,
+  Folio,
+  Scheme,
+  StatsData,
+} from "../types/defs"
 export interface Props {
   cas: CASParserData | null
   gains: GainsData | null
@@ -141,63 +149,65 @@ const props = withDefaults(defineProps<Props>(), {
   cas: null,
   gains: null,
   stats: null,
-});
+})
 
-const valuation = ref(0);
-const valuationDate = ref<Date | string>(new Date().toDateString());
-const { cas, gains } = toRefs(props);
-
+const valuation = ref(0)
+const valuationDate = ref<Date | string>(new Date().toDateString())
+const { cas, gains } = toRefs(props)
 
 const formatCurrency = (amount: number) => {
-  return amount ? amount.toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-    style: "currency",
-    currency: "INR",
-  }) : "N/A"
+  return amount
+    ? amount.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        style: "currency",
+        currency: "INR",
+      })
+    : "N/A"
 }
-const formatDate = (date: Date | string) => {
-  return moment(date).format('LL')
-}
+// const formatDate = (date: Date | string) => {
+//   return moment(date).format("LL")
+// }
 
 watch(cas, (value: CASParserData | null) => {
   if (value === null) {
-    valuation.value = 0;
-    valuationDate.value = new Date().toDateString();
-    return;
+    valuation.value = 0
+    valuationDate.value = new Date().toDateString()
+    return
   }
 
   valuation.value = 0
-  valuationDate.value = value.statement_period.to;
+  valuationDate.value = value.statement_period.to
   value.folios.forEach((folio) => {
     folio.schemes.forEach((scheme) => {
-      valuation.value += scheme.valuation.value;
+      valuation.value += scheme.valuation.value
     })
   })
-
 })
 
-
-const hideZeroSchemes = ref(true);
-const displayScheme = (scheme: Scheme) => {
-  return hideZeroSchemes.value ? scheme.valuation.value > 0 : true;
-}
+const hideZeroSchemes = ref(true)
+// const displayScheme = (scheme: Scheme) => {
+//   return hideZeroSchemes.value ? scheme.valuation.value > 0 : true
+// }
 const getSchemes = (folio: Folio): Scheme[] => {
-  return hideZeroSchemes.value ? folio.schemes.filter((scheme: Scheme) => scheme.valuation.value > 0): folio.schemes
+  return hideZeroSchemes.value
+    ? folio.schemes.filter((scheme: Scheme) => scheme.valuation.value > 0)
+    : folio.schemes
 }
 
 const folios = computed((): Folio[] => {
-  return cas.value === null ? [] : cas.value.folios.filter((folio: Folio) => getSchemes(folio).length > 0)
+  return cas.value === null
+    ? []
+    : cas.value.folios.filter((folio: Folio) => getSchemes(folio).length > 0)
 })
 
 const fys = computed((): string[] => {
-  if (gains.value == null) return [];
-  let keys = Object.keys(gains.value);
-  keys.sort();
-  keys.reverse();
-  return keys;
+  if (gains.value == null) return []
+  const keys = Object.keys(gains.value)
+  keys.sort()
+  keys.reverse()
+  return keys
 })
-
 </script>
 
 <style lang="scss">
@@ -222,5 +232,4 @@ const fys = computed((): string[] => {
 .p-datatable th[class*="text-"] .p-column-header-content {
   display: inline-flex;
 }
-
 </style>

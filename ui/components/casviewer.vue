@@ -1,52 +1,52 @@
 <template lang="pug">
 div(v-if="cas !== null")
-  h3.text-center.text-uppercase Consolidated Account {{ cas.cas_type === "SUMMARY" ? "summary" : "statement" }}
-  h4.text-center.text-uppercase Statement Period : {{ cas.statement_period.from }} To {{ cas.statement_period.to }}
+  h3.text-center.uppercase Consolidated Account {{ cas.cas_type === "SUMMARY" ? "summary" : "statement" }}
+  h4.text-center.uppercase Statement Period : {{ cas.statement_period.from }} To {{ cas.statement_period.to }}
   .grid.grid-nogutter.justify-content-center
     Fieldset(class="col-12 md:col-5" legend="Investor Info" :toggleable="true")
       .grid
         .col-3 Name
-        .col-9.text-uppercase.p-font-mono.text-bold {{ cas.investor_info.name }}
+        .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.name }}
         .col-3 Email
-        .col-9.text-uppercase.p-font-mono.text-bold {{ cas.investor_info.email }}
+        .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.email }}
         .col-3 Address
-        .col-9.text-uppercase.p-font-mono.text-bold {{ cas.investor_info.address }}
+        .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.address }}
         .col-3 Mobile
-        .col-9.text-uppercase.p-font-mono.text-bold {{ cas.investor_info.mobile }}
+        .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.mobile }}
     .col-1
     Fieldset(class="col-12 md:col-5" legend="CAS Data" :toggleable="true")
       .grid
         .col-6 Type
-        .col-6.text-bold.p-font-mono {{ cas.cas_type }}
+        .col-6.font-bold.p-font-mono {{ cas.cas_type }}
         .col-6 Source
-        .col-6.text-bold.p-font-mono {{ cas.file_type }}
+        .col-6.font-bold.p-font-mono {{ cas.file_type }}
         .col-6 Date
-        .col-6.text-bold.p-font-mono {{ valuationDate }}
+        .col-6.font-bold.p-font-mono {{ valuationDate }}
         .col-6 Total Invested
-        .col-6.text-bold.p-font-mono.p-valuation {{ (stats && stats.invested) ? formatCurrency(stats.invested) : 'N/A' }}
+        .col-6.font-bold.p-font-mono.p-valuation {{ (stats && stats.invested) ? formatCurrency(stats.invested) : 'N/A' }}
         .col-6 Total Valuation
-        .col-6.text-bold.p-font-mono.p-valuation {{ (stats && stats.current) ? formatCurrency(stats.current) : formatCurrency(valuation) }}
+        .col-6.font-bold.p-font-mono.p-valuation {{ (stats && stats.current) ? formatCurrency(stats.current) : formatCurrency(valuation) }}
 
   TabView
     TabPanel(header="Detailed")
       .flex.flex-row.justify-content-end.align-items-center.m-2
-        .text-bold.mr-2 Hide zero-balance funds?
+        .font-bold.mr-2 Hide zero-balance funds?
         InputSwitch(v-model="hideZeroSchemes")
       Panel.pb-4(v-for="(folio, index) in folios" :key="folio.folio" :toggleable="true")
         template(#header)
           .flex.flex-row.justify-content-between(style="width: 100%;")
             .flex.flex-row.justify-content-around.align-center
               span Folio:&nbsp;
-              .text-bold {{ folio.folio }}
+              .font-bold {{ folio.folio }}
             .flex.flex-row.justify-content-around.align-center
               span PAN:&nbsp;
-              .text-bold {{ folio.PAN }}
+              .font-semibold {{ folio.PAN }}
             .flex.flex-row.justify-content-around.align-center
               span KYC:&nbsp;
-              .text-bold {{ folio.KYC }}
+              .font-bold {{ folio.KYC }}
             .flex.flex-row.justify-content-around.align-center
               span PANKYC:&nbsp;
-              .text-bold {{ folio.PANKYC }}
+              .font-bold {{ folio.PANKYC }}
         DataTable.p-datatable-sm(v-for="scheme in getSchemes(folio)" :key="scheme.scheme" :autoLayout="true"
                                :value="scheme.transactions" :paginator="scheme.transactions.length > 5" :rows="10")
           template(#header)
@@ -54,10 +54,10 @@ div(v-if="cas !== null")
               .col-8 {{ scheme.scheme }}
               .col-2.flex.flex-row.justify-content-end
                 span Open:&nbsp;
-                .text-bold {{ scheme.open }}
+                .font-bold {{ scheme.open }}
               .col-2.flex.flex-row.justify-content-end
                 span Close:&nbsp;
-                .text-bold {{ scheme.close }}
+                .font-bold {{ scheme.close }}
           template(#empty) No transactions found!
           template(#footer)
             .flex.flex-row.justify-content-end
@@ -79,16 +79,16 @@ div(v-if="cas !== null")
         Panel(v-for="(fy, index) in fys" :key="fy" toggleable :collapsed="index > 0")
           template(#header)
             .flex.flex-row.grid(style="width: 100%;")
-              .text-bold.col-3 {{fy}}
+              .font-bold.col-3 {{fy}}
               .col-3.flex.flex-row.justify-content-around.align-center
                 span LTCG:&nbsp;
-                .text-bold(:class="{'text-red-400': gains[fy].total.ltcg < 0, 'p-text-profit': gains[fy].total.ltcg > 0}") {{ formatCurrency(gains[fy].total.ltcg) }}
+                .font-bold(:class="{'text-red-400': gains[fy].total.ltcg < 0, 'p-text-profit': gains[fy].total.ltcg > 0}") {{ formatCurrency(gains[fy].total.ltcg) }}
               .col-3.flex.flex-row.justify-content-around.align-center
                 span LTCG(Taxable):&nbsp;
-                .text-bold(:class="{'text-red-400': gains[fy].total.tax_ltcg < 0, 'p-text-profit': gains[fy].total.tax_ltcg > 0}") {{ formatCurrency(gains[fy].total.tax_ltcg) }}
+                .font-bold(:class="{'text-red-400': gains[fy].total.tax_ltcg < 0, 'p-text-profit': gains[fy].total.tax_ltcg > 0}") {{ formatCurrency(gains[fy].total.tax_ltcg) }}
               .col-3.flex.flex-row.justify-content-around.align-center
                 span STCG:&nbsp;
-                .text-bold(:class="{'text-red-400': gains[fy].total.stcg < 0, 'p-text-profit': gains[fy].total.stcg > 0}") {{ formatCurrency(gains[fy].total.stcg) }}
+                .font-bold(:class="{'text-red-400': gains[fy].total.stcg < 0, 'p-text-profit': gains[fy].total.stcg > 0}") {{ formatCurrency(gains[fy].total.stcg) }}
           DataTable.datatable-sm.my-4(v-for="fund in gains[fy].funds" :key="fund.fund.isin" :autoLayout="true"
                                           :value="fund.txns" :paginator="fund.txns.length > 5" :rows="10")
             template(#header)
@@ -96,21 +96,21 @@ div(v-if="cas !== null")
                 .col-8 {{ fund.fund.scheme }}
                 .col-2.flex.flex-row.justify-content-end
                   span ISIN:&nbsp;
-                  .text-bold {{ fund.fund.isin }}
+                  .font-bold {{ fund.fund.isin }}
                 .col-2.flex.flex-row.justify-content-end
                   span Type:&nbsp;
-                  .text-bold {{ fund.fund.type }}
+                  .font-bold {{ fund.fund.type }}
             template(#footer)
               .grid
                 .col-4.flex.flex-row.justify-content-around.align-center
                   span LTCG:&nbsp;
-                  .text-bold(:class="{'text-red-400': fund.total.ltcg < 0, 'p-text-profit': fund.total.ltcg > 0}") {{ formatCurrency(fund.total.ltcg) }}
+                  .font-bold(:class="{'text-red-400': fund.total.ltcg < 0, 'p-text-profit': fund.total.ltcg > 0}") {{ formatCurrency(fund.total.ltcg) }}
                 .col-4.flex.flex-row.justify-content-around.align-center
                   span LTCG (Taxable):&nbsp;
-                  .text-bold(:class="{'text-red-400': fund.total.tax_ltcg < 0, 'p-text-profit': fund.total.tax_ltcg > 0}") {{ formatCurrency(fund.total.tax_ltcg) }}
+                  .font-bold(:class="{'text-red-400': fund.total.tax_ltcg < 0, 'p-text-profit': fund.total.tax_ltcg > 0}") {{ formatCurrency(fund.total.tax_ltcg) }}
                 .col-4.flex.flex-row.justify-content-around.align-center
                   span STCG:&nbsp;
-                  .text-bold(:class="{'text-red-400': fund.total.stcg < 0, 'p-text-profit': fund.total.stcg > 0}") {{ formatCurrency(fund.total.stcg) }}
+                  .font-bold(:class="{'text-red-400': fund.total.stcg < 0, 'p-text-profit': fund.total.stcg > 0}") {{ formatCurrency(fund.total.stcg) }}
             template(#empty) No transactions found!
             Column(field="buy_date" header="Purchase Date")
             Column(field="buy_price" header="Purchase Value" headerClass="text-right" bodyClass="text-right")

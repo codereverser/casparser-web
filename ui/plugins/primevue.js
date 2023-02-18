@@ -9,6 +9,7 @@ import InputSwitch from "primevue/inputswitch";
 import InputText from "primevue/inputtext";
 import Panel from "primevue/panel";
 import Password from "primevue/password";
+import ProgressBar from "primevue/progressbar";
 import TabPanel from "primevue/tabpanel";
 import TabView from "primevue/tabview";
 
@@ -23,6 +24,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.component('InputText', InputText);
     nuxtApp.vueApp.component('Panel', Panel);
     nuxtApp.vueApp.component('Password', Password);
+    nuxtApp.vueApp.component('ProgressBar', ProgressBar);
     nuxtApp.vueApp.component('TabPanel', TabPanel);
     nuxtApp.vueApp.component('TabView', TabView);
 });

@@ -17,7 +17,8 @@
                         small(:class="{'p-invisible': v$.$errors.length === 0}").text-red-400 {{ formErrorText }}
                     Button.mr-4(label="Submit" @click="submit"
                                     :disabled="password.length <= 5" :loading="loading")
-
+ProgressBar(mode="indeterminate" :class="{'invisible': !loading}" style="height: 3px;")
+.text-center.text-red-400.mt-2(:class="{'invisible': serverErrorText.length === 0}") {{ serverErrorText }}
 </template>
 
 <script setup lang="ts">

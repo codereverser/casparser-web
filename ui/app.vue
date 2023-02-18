@@ -50,3 +50,28 @@ const onCASParsed = ({
     messageData.value = message;
   };
 </script>
+
+<style lang="scss">
+#__nuxt {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  //margin-top: 60px;
+
+  .p-font-sans {
+    font-family: Inter var, ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+      "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji";
+  }
+
+  .p-font-mono {
+    font-family: Menlo, ui-monospace, SFMono-Regular, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+  }
+
+  .invisible {
+    visibility: hidden;
+  }
+}
+</style>

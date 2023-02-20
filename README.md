@@ -19,7 +19,7 @@ now includes support for capital gains computation
 - backend
   - python >= 3.8
 - frontend
-  - node >= 12
+  - node >= 16
 
 ## Setup
 
@@ -43,7 +43,7 @@ and probably would be required only for production deployments
 uvicorn app:app --reload
 ```
 
-### Frontend
+### Frontend (development)
 1. Install dependencies
 ```
 npm install

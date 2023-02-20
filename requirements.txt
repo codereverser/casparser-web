@@ -1,6 +1,7 @@
 casparser[mupdf]>=0.6.0
 fastapi==0.89.1
-python-multipart==0.0.5
+gunicorn==20.1.0
 mangum==0.17.0
 pydantic>=1.10.4
+python-multipart==0.0.5
 uvicorn[standard]==0.20.0

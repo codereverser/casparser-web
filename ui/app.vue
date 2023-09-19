@@ -60,10 +60,22 @@ const onCASParsed = ({
   //margin-top: 60px;
 
   .p-font-sans {
-    font-family: Inter var, ui-sans-serif, system-ui, -apple-system,
-      BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-      "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-      "Segoe UI Symbol", "Noto Color Emoji";
+    font-family:
+      Inter var,
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      "Noto Sans",
+      sans-serif,
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji";
   }
 
   .p-font-mono {

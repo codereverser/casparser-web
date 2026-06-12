@@ -3,29 +3,31 @@ div(v-if="cas !== null")
   h3.text-center.uppercase Consolidated Account {{ cas.cas_type === "SUMMARY" ? "summary" : "statement" }}
   h4.text-center.uppercase Statement Period : {{ cas.statement_period.from }} To {{ cas.statement_period.to }}
   .grid.grid-nogutter.justify-content-center
-    Fieldset(class="col-12 md:col-5" legend="Investor Info" :toggleable="true")
-      .grid
-        .col-3 Name
-        .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.name }}
-        .col-3 Email
-        .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.email }}
-        .col-3 Address
-        .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.address }}
-        .col-3 Mobile
-        .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.mobile }}
+    .col-12(class="md:col-5")
+      Fieldset(legend="Investor Info" :toggleable="true")
+        .grid
+          .col-3 Name
+          .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.name }}
+          .col-3 Email
+          .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.email }}
+          .col-3 Address
+          .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.address }}
+          .col-3 Mobile
+          .col-9.uppercase.p-font-mono.font-bold {{ cas.investor_info.mobile }}
     .col-1
-    Fieldset(class="col-12 md:col-5" legend="CAS Data" :toggleable="true")
-      .grid
-        .col-6 Type
-        .col-6.font-bold.p-font-mono {{ cas.cas_type }}
-        .col-6 Source
-        .col-6.font-bold.p-font-mono {{ cas.file_type }}
-        .col-6 Date
-        .col-6.font-bold.p-font-mono {{ valuationDate }}
-        .col-6 Total Invested
-        .col-6.font-bold.p-font-mono.p-valuation {{ (stats && stats.invested) ? formatCurrency(stats.invested) : 'N/A' }}
-        .col-6 Total Valuation
-        .col-6.font-bold.p-font-mono.p-valuation {{ (stats && stats.current) ? formatCurrency(stats.current) : formatCurrency(valuation) }}
+    .col-12(class="md:col-5")
+      Fieldset(legend="CAS Data" :toggleable="true")
+        .grid
+          .col-6 Type
+          .col-6.font-bold.p-font-mono {{ cas.cas_type }}
+          .col-6 Source
+          .col-6.font-bold.p-font-mono {{ cas.file_type }}
+          .col-6 Date
+          .col-6.font-bold.p-font-mono {{ valuationDate }}
+          .col-6 Total Invested
+          .col-6.font-bold.p-font-mono.p-valuation {{ (stats && stats.invested) ? formatCurrency(stats.invested) : 'N/A' }}
+          .col-6 Total Valuation
+          .col-6.font-bold.p-font-mono.p-valuation {{ (stats && stats.current) ? formatCurrency(stats.current) : formatCurrency(valuation) }}
 
   Tabs(value="detailed")
     TabList

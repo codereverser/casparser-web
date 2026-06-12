@@ -20,17 +20,37 @@ div
             NuxtLink.p-button.p-component.p-button-text.no-underline(to="https://mfs.kfintech.com/investor/General/ConsolidatedAccountStatement" target="_blank")
               span.p-button-label.font-bold Karvy/KFINTECH
   casform(@cas-parsed="onCASParsed")
-  casviewer(:cas="casData" :gains="gainsData" :stats="statsData")
+  .grid.justify-content-center.mt-2(v-if="statusData === 'warn' && messageData")
+    Message(class="col-10 md:col-8" severity="warn") {{ messageData }}
+  casviewer(v-if="!isDemat" :cas="rtaData" :gains="gainsData" :stats="statsData")
+  dematviewer(v-else :cas="dematData")
 </template>
 
 <script setup lang="ts">
-import type { CASParserData, GainsData, StatsData } from "./types/defs"
+import type {
+  CASParserData,
+  NSDLCASData,
+  GainsData,
+  StatsData,
+} from "./types/defs"
 
-const casData = ref<CASParserData | null>(null)
+const casData = ref<CASParserData | NSDLCASData | null>(null)
 const gainsData = ref<GainsData | null>(null)
 const statusData = ref("")
-const messageData = ref<string[]>([])
+const messageData = ref("")
 const statsData = ref<StatsData | null>(null)
+
+// NSDL/CDSL demat statements carry accounts; RTA (CAMS/KFin) carry folios
+const isDemat = computed(
+  () => casData.value !== null && "accounts" in casData.value,
+)
+const rtaData = computed(() =>
+  isDemat.value ? null : (casData.value as CASParserData | null),
+)
+const dematData = computed(() =>
+  isDemat.value ? (casData.value as NSDLCASData) : null,
+)
+
 const onCASParsed = ({
   cas,
   gains,
@@ -38,11 +58,11 @@ const onCASParsed = ({
   status,
   message,
 }: {
-  cas: CASParserData
-  gains: GainsData
+  cas: CASParserData | NSDLCASData | null
+  gains: GainsData | null
   stats: StatsData | null
   status: string
-  message: string[]
+  message: string
 }) => {
   casData.value = cas
   gainsData.value = gains

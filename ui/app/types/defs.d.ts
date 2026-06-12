@@ -61,8 +61,73 @@ export interface FileUploader {
     investor_info: InvestorInfo;
     cas_type: string;
     file_type: string;
+    parse_warnings: string[];
   }
   export type { CASParserData };
+
+  export interface DematOwner {
+    name: string;
+    PAN: string;
+  }
+
+  export interface Equity {
+    name: string | null;
+    isin: string;
+    num_shares: number | string;
+    price: number | string;
+    value: number | string;
+    symbol: string | null;
+    exchange: string | null;
+  }
+
+  export interface Bond {
+    name: string | null;
+    isin: string;
+    num_bonds: number | string;
+    value: number | string;
+    face_value: number | string | null;
+    coupon_rate: number | string | null;
+    coupon_frequency: string | null;
+    maturity_date: string | null;
+    market_price: number | string | null;
+  }
+
+  export interface DematMutualFund {
+    name: string | null;
+    isin: string;
+    amfi: string | null;
+    type: string | null;
+    balance: number | string;
+    nav: number | string;
+    value: number | string;
+    avg_cost: number | string | null;
+    total_cost: number | string | null;
+    ucc: string | null;
+    folio: string | null;
+    pnl: number | string | null;
+    return: number | string | null;
+  }
+
+  export interface DematAccount {
+    name: string;
+    type: string;
+    dp_id: string | null;
+    client_id: string | null;
+    folios: number;
+    balance: number | string;
+    owners: DematOwner[];
+    equities: Equity[];
+    mutual_funds: DematMutualFund[];
+    bonds: Bond[];
+  }
+
+  type NSDLCASData = {
+    accounts: DematAccount[];
+    statement_period: StatementPeriod;
+    investor_info: InvestorInfo;
+    file_type: string;
+  }
+  export type { NSDLCASData };
   
   export interface GainEntry {
     fy: string;

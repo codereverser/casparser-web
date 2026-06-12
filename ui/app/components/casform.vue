@@ -17,7 +17,7 @@
                           :invalid="v$.$errors.length > 0")
                         small(:class="{'p-invisible': v$.$errors.length === 0}").text-red-400 {{ formErrorText }}
                     Button.mr-4(
-label="Submit" :disabled="password.length <= 5"
+label="Submit" :disabled="!filename"
                                     :loading="loading" @click="submit")
 ProgressBar(mode="indeterminate" :class="{'invisible': !loading}" style="height: 3px;")
 .text-center.text-red-400.mt-2(:class="{'invisible': serverErrorText.length === 0}") {{ serverErrorText }}
@@ -26,7 +26,6 @@ ProgressBar(mode="indeterminate" :class="{'invisible': !loading}" style="height:
 <script setup lang="ts">
 import { useVuelidate } from "@vuelidate/core"
 import type { ValidationRuleWithoutParams } from "@vuelidate/core"
-import { minLength, required } from "@vuelidate/validators"
 
 const emit = defineEmits(["cas-parsed"])
 
@@ -62,11 +61,11 @@ const fileMaxSize: ValidationRuleWithoutParams = {
   $message: "File should be less than 1MB.",
 }
 
+// Password is optional — NSDL/CDSL statements may be unprotected
 const rules = {
-  password: { required, minLength: minLength(5) },
   selectedFile: { fileMaxSize, fileRequired },
 }
-const v$ = useVuelidate(rules, { selectedFile, password })
+const v$ = useVuelidate(rules, { selectedFile })
 
 const formErrorText = computed(() => {
   return v$.value.$errors.length > 0 ? v$.value.$errors[0].$message : ""

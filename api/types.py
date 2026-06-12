@@ -1,18 +1,15 @@
-from datetime import date
-from decimal import Decimal
-from typing import Dict, Optional
-from typing_extensions import TypedDict
+from typing import Dict, Optional, Union
 
-from casparser.types import CASData
+from casparser.types import CASData, NSDLCASData
 from pydantic import BaseModel
 
 
 class CASResponse(BaseModel):
     status: str
     message: str
-    cas: CASData
-    gains: Optional[Dict]
-    stats: Optional[Dict]
+    cas: Union[CASData, NSDLCASData]
+    gains: Optional[Dict] = None
+    stats: Optional[Dict] = None
 
 
 class CASErrorResponse(CASResponse):

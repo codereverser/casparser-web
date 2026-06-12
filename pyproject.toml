@@ -1,0 +1,16 @@
+[project]
+name = "casparser-web"
+version = "1.0.0"
+description = "Web API demo for casparser"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.13"
+dependencies = [
+    "casparser>=1.1.0",
+    "fastapi>=0.115",
+    "gunicorn>=23.0",
+    "mangum>=0.19",
+    "pydantic-settings>=2.6",
+    "python-multipart>=0.0.18",
+    "uvicorn[standard]>=0.32",
+]

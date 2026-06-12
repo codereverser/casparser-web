@@ -17,20 +17,18 @@ now includes support for capital gains computation
 
 ## Dependencies
 - backend
-  - python >= 3.8
+  - python >= 3.13
+  - [uv](https://docs.astral.sh/uv/)
 - frontend
   - node >= 16
 
 ## Setup
 
 ### Backend
-1. Setup python virtualenv and install dependencies
+1. Install dependencies
 
 ```
-python3 -m venv venv
-source venv/bin/activate
-pip3 install -U setuptools wheel pip
-pip3 install -r requirements.txt
+uv sync
 ```
 
 2. Setup .env (Optional)
@@ -40,7 +38,7 @@ and probably would be required only for production deployments
 
 3. Deploy API
 ```
-uvicorn app:app --reload
+uv run uvicorn app:app --reload
 ```
 
 ### Frontend (development)

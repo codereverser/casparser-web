@@ -1,6 +1,5 @@
 import asyncio
 import itertools
-import time
 from typing import Optional
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
@@ -10,9 +9,14 @@ from mangum import Mangum
 
 from casparser import read_cas_pdf, CapitalGainsReport
 from casparser.analysis.gains import Fund
-from casparser.exceptions import IncompleteCASError
+from casparser.exceptions import (
+    IncompleteCASError,
+    IncorrectPasswordError,
+    ParserException,
+)
+from casparser.types import CASData
 
-from api.settings import APISettings, BASE_DIR
+from api.settings import APISettings
 from api.types import CASResponse, CASErrorResponse
 
 
@@ -21,7 +25,7 @@ settings = APISettings()
 
 
 @app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
+async def require_origin_header(request: Request, call_next):
     headers = request.headers
     if "origin" not in headers:
         return JSONResponse(
@@ -98,13 +102,34 @@ def prepare_gains(cg: Optional[CapitalGainsReport]):
     return summary
 
 
+def analyse_gains(cas_data: CASData, result: dict):
+    """Attach capital-gains summary and stats to the response."""
+    try:
+        cg_report = CapitalGainsReport(cas_data)
+    except IncompleteCASError:
+        result.update(status="warn", message="Incomplete CAS")
+        return
+    result.update(
+        gains=prepare_gains(cg_report),
+        stats={
+            "invested": cg_report.invested_amount,
+            "current": cg_report.current_value,
+        },
+    )
+    if cg_report.has_error():
+        result.update(
+            status="warn",
+            message="; ".join(f"{fund}: {err}" for fund, err in cg_report.errors),
+        )
+
+
 @app.post(
     "/api/process/",
     response_model=CASResponse,
     responses={400: {"model": CASErrorResponse}},
     summary="Process CAS PDF file.",
 )
-async def process_cas(password: str = Form(...), cas: UploadFile = File(...)):
+async def process_cas(password: str = Form(""), cas: UploadFile = File(...)):
     """Process CAS PDF file."""
     loop = asyncio.get_running_loop()
     result = {
@@ -112,27 +137,29 @@ async def process_cas(password: str = Form(...), cas: UploadFile = File(...)):
         "message": "Unknown Error",
         "cas": {},
         "gains": None,
-        "stats": {},
+        "stats": None,
     }
     try:
-        cas_dict = await loop.run_in_executor(None, read_cas_pdf, cas.file, password)
-        result.update(status="OK", message="", cas=cas_dict)
-        try:
-            cg_report = CapitalGainsReport(cas_dict)
-        except IncompleteCASError:
-            result.update(status="warn", message="Incomplete CAS")
-        else:
-            result.update(gains=prepare_gains(cg_report))
-            result.update(
-                stats={
-                    "invested": cg_report.invested_amount,
-                    "current": cg_report.current_value,
-                }
-            )
-            if cg_report.has_error():
-                result.update(status="warn", message=cg_report.errors)
-    except Exception as e:
+        cas_data = await loop.run_in_executor(None, read_cas_pdf, cas.file, password)
+    except IncorrectPasswordError:
+        result.update(message="Incorrect PDF password")
+    except ParserException as e:
         result.update(message=str(e))
+    except Exception as e:
+        result.update(message=f"Unknown error :: {e}")
+    else:
+        result.update(status="OK", message="", cas=cas_data)
+        if isinstance(cas_data, CASData):
+            # Capital gains only apply to RTA (CAMS/KFin) statements;
+            # NSDL/CDSL demat statements carry holdings, not transactions.
+            analyse_gains(cas_data, result)
+            if cas_data.parse_warnings:
+                warnings = "; ".join(cas_data.parse_warnings)
+                message = result["message"]
+                result.update(
+                    status="warn",
+                    message=f"{message}; {warnings}" if message else warnings,
+                )
     if result["status"] == "error":
         return JSONResponse(result, status_code=400)
     return result

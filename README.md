@@ -20,7 +20,7 @@ now includes support for capital gains computation
   - python >= 3.13
   - [uv](https://docs.astral.sh/uv/)
 - frontend
-  - node >= 16
+  - node >= 20
 
 ## Setup
 

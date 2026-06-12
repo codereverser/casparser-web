@@ -6,32 +6,28 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint --ext .ts,.js,.vue .",
-    "autolint": "eslint --fix --ext .ts,.js,.vue ."
+    "lint": "eslint .",
+    "autolint": "eslint --fix ."
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config-typescript": "^12.1.0",
-    "@volar/vue-language-plugin-pug": "latest",
-    "eslint": "^8.49.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-import-resolver-typescript": "^3.6.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-vue": "^9.17.0",
-    "eslint-plugin-vue-pug": "^0.6.0",
-    "nuxt": "^3.7.3",
-    "prettier": "^3.0.3",
-    "pug": "^3.0.2",
-    "sass": "^1.67.0",
-    "typescript": "^5.2.0",
-    "vite-plugin-eslint": "^1.8.1"
+    "@nuxt/eslint": "^1.16.0",
+    "@primevue/nuxt-module": "^4.5.5",
+    "@vue/language-plugin-pug": "^3.3.4",
+    "eslint": "^10.4.1",
+    "nuxt": "^4.4.8",
+    "prettier": "^3.8.4",
+    "pug": "^3.0.4",
+    "sass": "^1.101.0",
+    "typescript": "^6.0.3",
+    "vue-eslint-parser-template-tokenizer-pug": "^1.0.0"
   },
   "dependencies": {
+    "@primevue/themes": "^4.5.4",
     "@vuelidate/core": "^2.0.3",
-    "@vuelidate/validators": "^2.0.3",
-    "moment": "^2.29.4",
-    "primeflex": "^3.3.0",
-    "primeicons": "^6.0.1",
-    "primevue": "^3",
-    "vue-json-pretty": "^2.2.3"
+    "@vuelidate/validators": "^2.0.4",
+    "primeflex": "^4.0.0",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.5.5",
+    "vue-json-pretty": "^2.6.0"
   }
 }

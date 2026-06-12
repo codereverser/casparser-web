@@ -53,6 +53,11 @@ const onCASParsed = ({
 </script>
 
 <style lang="scss">
+body {
+  background: var(--p-surface-50);
+  margin: 0;
+}
+
 #__nuxt {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

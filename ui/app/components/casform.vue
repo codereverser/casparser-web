@@ -14,7 +14,7 @@
                         Password.mr-4(
                           v-model="password" :toggle-mask="true"
                           :feedback="false" placeholder="Enter CAS Password"
-                          :class="{'p-invalid': v$.$errors.length > 0}")
+                          :invalid="v$.$errors.length > 0")
                         small(:class="{'p-invisible': v$.$errors.length === 0}").text-red-400 {{ formErrorText }}
                     Button.mr-4(
 label="Submit" :disabled="password.length <= 5"
@@ -102,8 +102,8 @@ const submit = async () => {
         message,
       })
     }
-  } catch (error: any) {
-    if (Object.prototype.hasOwnProperty.call(error, "message")) {
+  } catch (error) {
+    if (error instanceof Error && error.message) {
       serverErrorText.value = error.message
     } else {
       serverErrorText.value = "Unknown Error. Please try again!"

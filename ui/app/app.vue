@@ -9,16 +9,21 @@ div
             NuxtLink.p-button.p-component.p-button-text.no-underline.p-button-xs(href="https://github.com/codereverser/casparser" target="_blank")
               span.p-button-label.font-bold casparser
         template(#content)
-          p Parse Consolidated Account Statements (CAS) from CAMS/Karvy and view
+          p Parse Consolidated Account Statements (CAS) from CAMS/KFintech or NSDL/CDSL (demat) and view
           ol
             li.my-2 Portfolio Summary and Valuation
-            li Capital Gains report
+            li.my-2 Capital Gains report (CAMS/KFintech detailed statements)
+            li Demat holdings - equities, mutual funds and bonds (NSDL/CDSL)
           .font-bold Generate CAS pdf files from either of the following sources
           .grid.justify-content.start.my-2
             NuxtLink.p-button.p-component.p-button-text.no-underline(to="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement" target="_blank")
               span.p-button-label.font-bold CAMS
             NuxtLink.p-button.p-component.p-button-text.no-underline(to="https://mfs.kfintech.com/investor/General/ConsolidatedAccountStatement" target="_blank")
               span.p-button-label.font-bold Karvy/KFINTECH
+            NuxtLink.p-button.p-component.p-button-text.no-underline(to="https://nsdlcas.nsdl.com" target="_blank")
+              span.p-button-label.font-bold NSDL
+            NuxtLink.p-button.p-component.p-button-text.no-underline(to="https://www.cdslindia.com" target="_blank")
+              span.p-button-label.font-bold CDSL
   casform(@cas-parsed="onCASParsed")
   .grid.justify-content-center.mt-2(v-if="statusData === 'warn' && messageData")
     Message(class="col-10 md:col-8" severity="warn") {{ messageData }}

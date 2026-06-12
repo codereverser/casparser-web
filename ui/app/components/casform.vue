@@ -56,9 +56,9 @@ const fileRequired: ValidationRuleWithoutParams = {
 }
 const fileMaxSize: ValidationRuleWithoutParams = {
   $validator: (el): boolean => {
-    return el instanceof File && el.size <= 1048576
+    return el instanceof File && el.size <= 5 * 1024 * 1024
   },
-  $message: "File should be less than 1MB.",
+  $message: "File should be less than 5MB.",
 }
 
 // Password is optional — NSDL/CDSL statements may be unprotected

@@ -10,7 +10,7 @@ dependencies = [
     "fastapi>=0.115",
     "gunicorn>=23.0",
     "mangum>=0.19",
-    "pydantic-settings>=2.6",
+    "pydantic-settings>=2.14.2",
     "python-multipart>=0.0.18",
     "uvicorn[standard]>=0.32",
 ]

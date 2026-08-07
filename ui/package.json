@@ -14,7 +14,7 @@
     "@primevue/nuxt-module": "^4.5.5",
     "@vue/language-plugin-pug": "^3.3.4",
     "eslint": "^10.4.1",
-    "nuxt": "^4.4.8",
+    "nuxt": "^4.5.1",
     "prettier": "^3.8.4",
     "pug": "^3.0.4",
     "sass": "^1.101.0",
